@@ -34,15 +34,7 @@ public class UserServiceImpl implements UserService
 	@Override
 	public List<UserResponseDto> findAll()
 	{
-		return ur.findAll()
-				.stream()
-				.map(user -> UserResponseDto.builder()
-						.id(user.getId())
-						.name(user.getName())
-						.email(user.getEmail())
-						.role(user.getRole())
-						.build())
-				.toList();
+		return ur.findAll().stream().map(user -> mapper.toResponse(user)).toList();
 	}
 
 	@Override
