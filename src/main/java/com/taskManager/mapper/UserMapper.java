@@ -9,7 +9,7 @@ import com.taskManager.model.User;
 @Mapper(componentModel = "spring")
 public interface UserMapper
 {
-	UserResponseDto toUserResponseDto(User user);
+	User toEntity(UserRequestDto dto);
 
-	User toUser(UserRequestDto userRequestDto);
+	UserResponseDto toResponse(User user);
 }

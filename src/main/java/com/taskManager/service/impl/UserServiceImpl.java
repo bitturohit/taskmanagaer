@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import com.taskManager.dto.UserRequestDto;
 import com.taskManager.dto.UserResponseDto;
 import com.taskManager.exceptions.ResourceNotFound;
+import com.taskManager.mapper.UserMapper;
 import com.taskManager.model.Role;
 import com.taskManager.model.User;
 import com.taskManager.repository.UserRepository;
@@ -19,15 +20,13 @@ import lombok.RequiredArgsConstructor;
 public class UserServiceImpl implements UserService
 {
 	private final UserRepository ur;
+	private final UserMapper mapper;
 
 	@Override
-	public User saveUser(UserRequestDto user)
+	public User saveUser(UserRequestDto userDto)
 	{
-		User userObj = User.builder()
-				.name(user.getName())
-				.email(user.getEmail())
-				.role(Role.USER)
-				.build();
+		User userObj = mapper.toEntity(userDto);
+		userObj.setRole(Role.USER);
 
 		return ur.save(userObj);
 	}
