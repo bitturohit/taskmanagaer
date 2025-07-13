@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import com.taskManager.dto.TaskRequestDto;
 import com.taskManager.dto.TaskResponseDto;
 import com.taskManager.exceptions.ResourceNotFound;
+import com.taskManager.mapper.TaskMapper;
 import com.taskManager.model.Task;
 import com.taskManager.model.User;
 import com.taskManager.repository.TaskRepository;
@@ -21,6 +22,7 @@ public class TaskServiceImpl implements TaskService
 {
 	private final UserRepository ur;
 	private final TaskRepository tr;
+	private final TaskMapper mapper;
 
 	@Override
 	public TaskResponseDto createTask(TaskRequestDto taskDto)
@@ -29,20 +31,11 @@ public class TaskServiceImpl implements TaskService
 				.orElseThrow(() -> new ResourceNotFound(
 						"User not found with id: " + taskDto.getUserId()));
 
-		Task task = Task.builder()
-				.message(taskDto.getMessage())
-				.description(taskDto.getDescription())
-				.createdFor(user)
-				.build();
+		Task task = mapper.toEntity(taskDto, user);
 
 		Task saved = tr.save(task);
 
-		return TaskResponseDto.builder()
-				.id(saved.getId())
-				.message(saved.getMessage())
-				.description(saved.getDescription())
-				.createdFor(saved.getCreatedFor().getName())
-				.build();
+		return mapper.toResponse(saved);
 	}
 
 	@Override
@@ -57,15 +50,7 @@ public class TaskServiceImpl implements TaskService
 	@Override
 	public List<TaskResponseDto> getAllTasks()
 	{
-		return tr.findAll()
-				.stream()
-				.map(task -> TaskResponseDto.builder()
-						.id(task.getId())
-						.message(task.getMessage())
-						.description(task.getDescription())
-						.createdFor(task.getCreatedFor().getName())
-						.build())
-				.toList();
+		return tr.findAll().stream().map(task -> mapper.toResponse(task)).toList();
 	}
 
 }
