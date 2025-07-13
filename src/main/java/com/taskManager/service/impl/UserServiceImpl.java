@@ -23,12 +23,14 @@ public class UserServiceImpl implements UserService
 	private final UserMapper mapper;
 
 	@Override
-	public User saveUser(UserRequestDto userDto)
+	public UserResponseDto saveUser(UserRequestDto userDto)
 	{
 		User userObj = mapper.toEntity(userDto);
 		userObj.setRole(Role.USER);
 
-		return ur.save(userObj);
+		User saved = ur.save(userObj);
+
+		return mapper.toResponse(saved);
 	}
 
 	@Override

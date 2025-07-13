@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.taskManager.dto.UserRequestDto;
 import com.taskManager.dto.UserResponseDto;
-import com.taskManager.model.User;
 import com.taskManager.response.ResponseApi;
 import com.taskManager.service.UserService;
 
@@ -26,6 +25,16 @@ public class UserController
 {
 	private final UserService us;
 
+	@PostMapping
+	public ResponseEntity<ResponseApi<UserResponseDto>> createUser(
+			@Valid @RequestBody UserRequestDto uDto)
+	{
+		UserResponseDto savedUser = us.saveUser(uDto);
+
+		return ResponseEntity.status(HttpStatus.CREATED)
+				.body(new ResponseApi<>("User created successfully", savedUser, true));
+	}
+
 	@GetMapping
 	public ResponseEntity<ResponseApi<List<UserResponseDto>>> getAllUsers()
 	{
@@ -34,12 +43,4 @@ public class UserController
 		return ResponseEntity.ok(new ResponseApi<>("Fetched all users", users, true));
 	}
 
-	@PostMapping
-	public ResponseEntity<ResponseApi<User>> createUser(@Valid @RequestBody UserRequestDto uDto)
-	{
-		User savedUser = us.saveUser(uDto);
-
-		return ResponseEntity.status(HttpStatus.CREATED)
-				.body(new ResponseApi<>("User created successfully", savedUser, true));
-	}
 }

@@ -4,11 +4,10 @@ import java.util.List;
 
 import com.taskManager.dto.UserRequestDto;
 import com.taskManager.dto.UserResponseDto;
-import com.taskManager.model.User;
 
 public interface UserService
 {
-	User saveUser(UserRequestDto userDto);
+	UserResponseDto saveUser(UserRequestDto userDto);
 
 	List<UserResponseDto> findAll();
 
