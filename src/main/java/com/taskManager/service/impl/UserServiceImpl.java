@@ -1,7 +1,6 @@
 package com.taskManager.service.impl;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -43,9 +42,8 @@ public class UserServiceImpl implements UserService
 	}
 
 	@Override
-	public Page<UserResponseDto> findAll(int page, int size)
+	public Page<UserResponseDto> findAll(Pageable pageable)
 	{
-		Pageable pageable = PageRequest.of(page, size);
 		Page<User> users = ur.findAll(pageable);
 		Page<UserResponseDto> responsePage = users.map(user -> mapper.toResponse(user));
 

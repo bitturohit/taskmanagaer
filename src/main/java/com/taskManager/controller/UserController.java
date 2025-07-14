@@ -1,6 +1,8 @@
 package com.taskManager.controller;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,7 +41,8 @@ public class UserController
 			@RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "5") int size)
 	{
-		Page<UserResponseDto> users = us.findAll(page, size);
+		Pageable pageable = PageRequest.of(page, size);
+		Page<UserResponseDto> users = us.findAll(pageable);
 
 		return ResponseEntity.ok(new ApiResponse<>(true, "Fetched paginated users", users));
 	}
