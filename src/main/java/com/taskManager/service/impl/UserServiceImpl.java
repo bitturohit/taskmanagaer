@@ -1,7 +1,8 @@
 package com.taskManager.service.impl;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.taskManager.dto.user.UserRequestDto;
@@ -34,16 +35,20 @@ public class UserServiceImpl implements UserService
 	}
 
 	@Override
-	public List<UserResponseDto> findAll()
-	{
-		return ur.findAll().stream().map(user -> mapper.toResponse(user)).toList();
-	}
-
-	@Override
 	public void deleteById(int id)
 	{
 		User u = ur.findById(id)
 				.orElseThrow(() -> new ResourceNotFound("Invalid ID: user not found"));
 		ur.delete(u);
+	}
+
+	@Override
+	public Page<UserResponseDto> findAll(int page, int size)
+	{
+		Pageable pageable = PageRequest.of(page, size);
+		Page<User> users = ur.findAll(pageable);
+		Page<UserResponseDto> responsePage = users.map(user -> mapper.toResponse(user));
+
+		return responsePage;
 	}
 }

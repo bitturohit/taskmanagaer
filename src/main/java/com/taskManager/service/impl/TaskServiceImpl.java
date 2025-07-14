@@ -1,7 +1,7 @@
 package com.taskManager.service.impl;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.taskManager.dto.task.TaskRequestDto;
@@ -48,9 +48,9 @@ public class TaskServiceImpl implements TaskService
 	}
 
 	@Override
-	public List<TaskResponseDto> getAllTasks()
+	public Page<TaskResponseDto> getAllTasks(Pageable pageable)
 	{
-		return tr.findAll().stream().map(task -> mapper.toResponse(task)).toList();
+		return tr.findAll(pageable).map(task -> mapper.toResponse(task));
 	}
 
 }
