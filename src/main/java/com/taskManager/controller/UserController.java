@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.taskManager.dto.user.UserResponseDto;
-import com.taskManager.response.ResponseApi;
+import com.taskManager.response.ApiResponse;
 import com.taskManager.service.UserService;
 
 import jakarta.validation.Valid;
@@ -25,21 +25,21 @@ public class UserController
 	private final UserService us;
 
 	@PostMapping
-	public ResponseEntity<ResponseApi<UserResponseDto>> createUser(
+	public ResponseEntity<ApiResponse<UserResponseDto>> createUser(
 			@Valid @RequestBody com.taskManager.dto.user.UserRequestDto uDto)
 	{
 		UserResponseDto savedUser = us.saveUser(uDto);
 
 		return ResponseEntity.status(HttpStatus.CREATED)
-				.body(new ResponseApi<>("User created successfully", savedUser, true));
+				.body(new ApiResponse<>(true, "User created successfully", savedUser));
 	}
 
 	@GetMapping
-	public ResponseEntity<ResponseApi<List<UserResponseDto>>> getAllUsers()
+	public ResponseEntity<ApiResponse<List<UserResponseDto>>> getAllUsers()
 	{
 		List<UserResponseDto> users = us.findAll();
 
-		return ResponseEntity.ok(new ResponseApi<>("Fetched all users", users, true));
+		return ResponseEntity.ok(new ApiResponse<>(true, "Fetched all users", users));
 	}
 
 }

@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.taskManager.dto.task.TaskRequestDto;
 import com.taskManager.dto.task.TaskResponseDto;
-import com.taskManager.response.ResponseApi;
+import com.taskManager.response.ApiResponse;
 import com.taskManager.service.TaskService;
 
 import jakarta.validation.Valid;
@@ -28,29 +28,29 @@ public class TaskController
 	private final TaskService taskService;
 
 	@PostMapping
-	public ResponseEntity<ResponseApi<TaskResponseDto>> create(
+	public ResponseEntity<ApiResponse<TaskResponseDto>> create(
 			@Valid @RequestBody TaskRequestDto taskDto)
 	{
 		TaskResponseDto task = taskService.createTask(taskDto);
 
 		return ResponseEntity.status(HttpStatus.CREATED)
-				.body(new ResponseApi<>("New task created", task, true));
+				.body(new ApiResponse<>(true, "New task created", task));
 	}
 
 	@GetMapping
-	public ResponseEntity<ResponseApi<List<TaskResponseDto>>> getAllTasks()
+	public ResponseEntity<ApiResponse<List<TaskResponseDto>>> getAllTasks()
 	{
 		List<TaskResponseDto> tasks = taskService.getAllTasks();
 
-		return ResponseEntity.ok(new ResponseApi<>("Fetched all tasks", tasks, true));
+		return ResponseEntity.ok(new ApiResponse<>(true, "Fetched all tasks", tasks));
 	}
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<ResponseApi<String>> delete(@PathVariable long id)
+	public ResponseEntity<ApiResponse<String>> delete(@PathVariable long id)
 	{
 		taskService.deleteTask(id);
 
 		return ResponseEntity
-				.ok(new ResponseApi<>("Task with ID " + id + " deleted successfully", null, true));
+				.ok(new ApiResponse<>(true, "Task with ID " + id + " deleted successfully", null));
 	}
 }
