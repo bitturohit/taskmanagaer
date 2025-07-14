@@ -10,8 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.taskManager.dto.UserRequestDto;
-import com.taskManager.dto.UserResponseDto;
+import com.taskManager.dto.user.UserResponseDto;
 import com.taskManager.response.ResponseApi;
 import com.taskManager.service.UserService;
 
@@ -27,7 +26,7 @@ public class UserController
 
 	@PostMapping
 	public ResponseEntity<ResponseApi<UserResponseDto>> createUser(
-			@Valid @RequestBody UserRequestDto uDto)
+			@Valid @RequestBody com.taskManager.dto.user.UserRequestDto uDto)
 	{
 		UserResponseDto savedUser = us.saveUser(uDto);
 

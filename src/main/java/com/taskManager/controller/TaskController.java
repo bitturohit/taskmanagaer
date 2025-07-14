@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.taskManager.dto.TaskRequestDto;
-import com.taskManager.dto.TaskResponseDto;
+import com.taskManager.dto.task.TaskRequestDto;
+import com.taskManager.dto.task.TaskResponseDto;
 import com.taskManager.response.ResponseApi;
 import com.taskManager.service.TaskService;
 

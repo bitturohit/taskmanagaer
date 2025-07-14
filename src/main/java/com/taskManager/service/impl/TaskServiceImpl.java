@@ -4,9 +4,9 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.taskManager.dto.TaskRequestDto;
-import com.taskManager.dto.TaskResponseDto;
-import com.taskManager.exceptions.ResourceNotFound;
+import com.taskManager.dto.task.TaskRequestDto;
+import com.taskManager.dto.task.TaskResponseDto;
+import com.taskManager.exception.ResourceNotFound;
 import com.taskManager.mapper.TaskMapper;
 import com.taskManager.model.Task;
 import com.taskManager.model.User;

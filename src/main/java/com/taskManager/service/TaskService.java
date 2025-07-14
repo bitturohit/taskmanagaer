@@ -2,8 +2,8 @@ package com.taskManager.service;
 
 import java.util.List;
 
-import com.taskManager.dto.TaskRequestDto;
-import com.taskManager.dto.TaskResponseDto;
+import com.taskManager.dto.task.TaskRequestDto;
+import com.taskManager.dto.task.TaskResponseDto;
 
 public interface TaskService
 {
