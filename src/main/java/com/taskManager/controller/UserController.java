@@ -1,5 +1,7 @@
 package com.taskManager.controller;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -8,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.taskManager.dto.user.UserResponseDto;
@@ -31,7 +34,6 @@ public class UserController
 			@Valid @RequestBody com.taskManager.dto.user.UserRequestDto uDto)
 	{
 		UserResponseDto savedUser = us.saveUser(uDto);
-
 		return ResponseEntity.status(HttpStatus.CREATED)
 				.body(new ApiResponse<>(true, "User created successfully", savedUser));
 	}
@@ -41,8 +43,15 @@ public class UserController
 	{
 		Page<UserResponseDto> users = us.findAll(pageable);
 		PageResponse<UserResponseDto> metaWrapped = PageResponseBuilder.build(users);
-
 		return ResponseEntity.ok(new ApiResponse<>(true, "Fetched paginated users", metaWrapped));
+	}
+
+	@GetMapping("/search")
+	public ResponseEntity<ApiResponse<List<UserResponseDto>>> searchusers(
+			@RequestParam String query)
+	{
+		List<UserResponseDto> results = us.searchUsers(query);
+		return ResponseEntity.ok(new ApiResponse<>(true, "User search results", results));
 	}
 
 }

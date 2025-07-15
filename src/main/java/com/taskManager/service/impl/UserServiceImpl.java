@@ -1,5 +1,7 @@
 package com.taskManager.service.impl;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -48,5 +50,13 @@ public class UserServiceImpl implements UserService
 		Page<UserResponseDto> responsePage = users.map(user -> mapper.toResponse(user));
 
 		return responsePage;
+	}
+
+	@Override
+	public List<UserResponseDto> searchUsers(String keyword)
+	{
+		List<User> filteredUsers = ur
+				.findByNameContainingIgnoreCaseOrEmailContainingIgnoreCase(keyword, keyword);
+		return filteredUsers.stream().map(mapper::toResponse).toList();
 	}
 }
