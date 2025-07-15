@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.taskManager.dto.user.UserResponseDto;
 import com.taskManager.response.ApiResponse;
+import com.taskManager.response.PageResponse;
+import com.taskManager.response.PageResponseBuilder;
 import com.taskManager.service.UserService;
 
 import jakarta.validation.Valid;
@@ -35,11 +37,12 @@ public class UserController
 	}
 
 	@GetMapping
-	public ResponseEntity<ApiResponse<Page<UserResponseDto>>> getAllUsers(Pageable pageable)
+	public ResponseEntity<ApiResponse<PageResponse<UserResponseDto>>> getAllUsers(Pageable pageable)
 	{
 		Page<UserResponseDto> users = us.findAll(pageable);
+		PageResponse<UserResponseDto> metaWrapped = PageResponseBuilder.build(users);
 
-		return ResponseEntity.ok(new ApiResponse<>(true, "Fetched paginated users", users));
+		return ResponseEntity.ok(new ApiResponse<>(true, "Fetched paginated users", metaWrapped));
 	}
 
 }

@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.taskManager.dto.task.TaskRequestDto;
 import com.taskManager.dto.task.TaskResponseDto;
 import com.taskManager.response.ApiResponse;
+import com.taskManager.response.PageResponse;
+import com.taskManager.response.PageResponseBuilder;
 import com.taskManager.service.TaskService;
 
 import jakarta.validation.Valid;
@@ -38,12 +40,13 @@ public class TaskController
 	}
 
 	@GetMapping
-	public ResponseEntity<ApiResponse<Page<TaskResponseDto>>> getAllTasks(Pageable pageable)
+	public ResponseEntity<ApiResponse<PageResponse<TaskResponseDto>>> getAllTasks(Pageable pageable)
 	{
 
 		Page<TaskResponseDto> tasks = taskService.getAllTasks(pageable);
+		PageResponse<TaskResponseDto> metaWrapped = PageResponseBuilder.build(tasks);
 
-		return ResponseEntity.ok(new ApiResponse<>(true, "Fetched all tasks", tasks));
+		return ResponseEntity.ok(new ApiResponse<>(true, "Fetched all tasks", metaWrapped));
 	}
 
 	@DeleteMapping("/{id}")
