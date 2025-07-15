@@ -47,6 +47,7 @@ public class UserServiceImpl implements UserService
 	public Page<UserResponseDto> findAll(Pageable pageable)
 	{
 		Page<User> users = ur.findAll(pageable);
+		// stream not needed as we are mapping over Page type
 		Page<UserResponseDto> responsePage = users.map(user -> mapper.toResponse(user));
 
 		return responsePage;

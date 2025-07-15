@@ -29,21 +29,17 @@ public class UserController
 {
 	private final UserService us;
 
-	@PostMapping
-	public ResponseEntity<ApiResponse<UserResponseDto>> createUser(
-			@Valid @RequestBody com.taskManager.dto.user.UserRequestDto uDto)
-	{
-		UserResponseDto savedUser = us.saveUser(uDto);
-		return ResponseEntity.status(HttpStatus.CREATED)
-				.body(new ApiResponse<>(true, "User created successfully", savedUser));
-	}
-
 	@GetMapping
-	public ResponseEntity<ApiResponse<PageResponse<UserResponseDto>>> getAllUsers(Pageable pageable)
+	public ResponseEntity<ApiResponse<PageResponse<UserResponseDto>>> getAllUsers(
+			Pageable pageable)
 	{
 		Page<UserResponseDto> users = us.findAll(pageable);
-		PageResponse<UserResponseDto> metaWrapped = PageResponseBuilder.build(users);
-		return ResponseEntity.ok(new ApiResponse<>(true, "Fetched paginated users", metaWrapped));
+		PageResponse<UserResponseDto> metaWrapped = PageResponseBuilder
+				.build(users);
+		return ResponseEntity.ok(new ApiResponse<>(
+				true,
+				"Fetched paginated users",
+				metaWrapped));
 	}
 
 	@GetMapping("/search")
@@ -51,7 +47,20 @@ public class UserController
 			@RequestParam String query)
 	{
 		List<UserResponseDto> results = us.searchUsers(query);
-		return ResponseEntity.ok(new ApiResponse<>(true, "User search results", results));
+		return ResponseEntity
+				.ok(new ApiResponse<>(true, "User search results", results));
+	}
+
+	@PostMapping
+	public ResponseEntity<ApiResponse<UserResponseDto>> createUser(
+			@Valid @RequestBody com.taskManager.dto.user.UserRequestDto uDto)
+	{
+		UserResponseDto savedUser = us.saveUser(uDto);
+		return ResponseEntity.status(HttpStatus.CREATED)
+				.body(new ApiResponse<>(
+						true,
+						"User created successfully",
+						savedUser));
 	}
 
 }

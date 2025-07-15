@@ -1,5 +1,7 @@
 package com.taskManager.service.impl;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -51,6 +53,20 @@ public class TaskServiceImpl implements TaskService
 	public Page<TaskResponseDto> getAllTasks(Pageable pageable)
 	{
 		return tr.findAll(pageable).map(task -> mapper.toResponse(task));
+	}
+
+	@Override
+	public List<TaskResponseDto> searchByMessage(String message)
+	{
+		List<Task> filteredTasks = tr.findByMessageContainingIgnoreCase(message);
+		return filteredTasks.stream().map(mapper::toResponse).toList();
+	}
+
+	@Override
+	public List<TaskResponseDto> searchByName(String name)
+	{
+		List<Task> filteredTasks = tr.findByCreatedFor_NameContainingIgnoreCase(name);
+		return filteredTasks.stream().map(mapper::toResponse).toList();
 	}
 
 }

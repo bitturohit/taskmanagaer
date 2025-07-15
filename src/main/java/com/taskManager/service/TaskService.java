@@ -1,5 +1,7 @@
 package com.taskManager.service;
 
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -13,4 +15,8 @@ public interface TaskService
 	Page<TaskResponseDto> getAllTasks(Pageable pageable);
 
 	void deleteTask(long id);
+
+	List<TaskResponseDto> searchByMessage(String message);
+
+	List<TaskResponseDto> searchByName(String name);
 }
