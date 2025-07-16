@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.taskManager.dto.task.TaskFilterDto;
 import com.taskManager.dto.task.TaskRequestDto;
 import com.taskManager.dto.task.TaskResponseDto;
 import com.taskManager.response.ApiResponse;
@@ -45,22 +45,14 @@ public class TaskController
 				.ok(new ApiResponse<>(true, "Fetched all tasks", metaWrapped));
 	}
 
-	@GetMapping("/search/message")
-	public ResponseEntity<ApiResponse<List<TaskResponseDto>>> searchByMessage(
-			@RequestParam String text)
+	@PostMapping("/filter")
+	public ResponseEntity<ApiResponse<List<TaskResponseDto>>> filterTasks(
+			@RequestBody TaskFilterDto filterDto)
 	{
-		List<TaskResponseDto> result = taskService.searchByMessage(text);
-		return ResponseEntity
-				.ok(new ApiResponse<>(true, "Filtered by message", result));
-	}
+		List<TaskResponseDto> result = taskService.filterTasks(filterDto);
 
-	@GetMapping("/search/user")
-	public ResponseEntity<ApiResponse<List<TaskResponseDto>>> searchByName(
-			@RequestParam String name)
-	{
-		List<TaskResponseDto> result = taskService.searchByName(name);
 		return ResponseEntity
-				.ok(new ApiResponse<>(true, "Filtered by name", result));
+				.ok(new ApiResponse<>(true, "Filtered tasks results", result));
 	}
 
 	@PostMapping

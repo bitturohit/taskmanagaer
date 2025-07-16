@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import com.taskManager.dto.task.TaskFilterDto;
 import com.taskManager.dto.task.TaskRequestDto;
 import com.taskManager.dto.task.TaskResponseDto;
 
@@ -16,7 +17,5 @@ public interface TaskService
 
 	void deleteTask(long id);
 
-	List<TaskResponseDto> searchByMessage(String message);
-
-	List<TaskResponseDto> searchByName(String name);
+	List<TaskResponseDto> filterTasks(TaskFilterDto dto);
 }

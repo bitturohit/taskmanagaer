@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.taskManager.dto.task.TaskFilterDto;
 import com.taskManager.dto.task.TaskRequestDto;
 import com.taskManager.dto.task.TaskResponseDto;
 import com.taskManager.exception.ResourceNotFound;
@@ -44,7 +45,8 @@ public class TaskServiceImpl implements TaskService
 	public void deleteTask(long id)
 	{
 		Task task = tr.findById(id)
-				.orElseThrow(() -> new ResourceNotFound("Task not found with id: " + id));
+				.orElseThrow(() -> new ResourceNotFound(
+						"Task not found with id: " + id));
 
 		tr.delete(task);
 	}
@@ -56,17 +58,26 @@ public class TaskServiceImpl implements TaskService
 	}
 
 	@Override
-	public List<TaskResponseDto> searchByMessage(String message)
+	public List<TaskResponseDto> filterTasks(TaskFilterDto dto)
 	{
-		List<Task> filteredTasks = tr.findByMessageContainingIgnoreCase(message);
-		return filteredTasks.stream().map(mapper::toResponse).toList();
-	}
+		String message = dto.getMessage();
+		String userName = dto.getUserName();
 
-	@Override
-	public List<TaskResponseDto> searchByName(String name)
-	{
-		List<Task> filteredTasks = tr.findByCreatedFor_NameContainingIgnoreCase(name);
-		return filteredTasks.stream().map(mapper::toResponse).toList();
+		List<Task> filtered = tr.findAll().stream().filter((task) -> {
+			boolean matchesMsg = (message == null || message.isBlank())
+					|| task.getMessage()
+							.toLowerCase()
+							.contains(message.toLowerCase());
+			boolean matchesName = (userName == null || userName.isBlank())
+					|| task.getCreatedFor()
+							.getName()
+							.toLowerCase()
+							.contains(userName.toLowerCase());
+
+			return matchesMsg && matchesName;
+		}).toList();
+
+		return filtered.stream().map(mapper::toResponse).toList();
 	}
 
 }
