@@ -6,5 +6,5 @@ import lombok.Data;
 public class TaskFilterDto
 {
 	private String message;
-	private String userName;
+	private String createdFor;
 }

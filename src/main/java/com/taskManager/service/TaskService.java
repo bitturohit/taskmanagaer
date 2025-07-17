@@ -1,7 +1,5 @@
 package com.taskManager.service;
 
-import java.util.List;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -17,5 +15,5 @@ public interface TaskService
 
 	void deleteTask(long id);
 
-	List<TaskResponseDto> filterTasks(TaskFilterDto dto);
+	Page<TaskResponseDto> filterTasks(TaskFilterDto filterDto, Pageable pageable);
 }

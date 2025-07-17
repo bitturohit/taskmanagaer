@@ -3,6 +3,7 @@ package com.taskManager.service.impl;
 import java.util.List;
 
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -45,8 +46,7 @@ public class TaskServiceImpl implements TaskService
 	public void deleteTask(long id)
 	{
 		Task task = tr.findById(id)
-				.orElseThrow(() -> new ResourceNotFound(
-						"Task not found with id: " + id));
+				.orElseThrow(() -> new ResourceNotFound("Task not found with id: " + id));
 
 		tr.delete(task);
 	}
@@ -58,26 +58,39 @@ public class TaskServiceImpl implements TaskService
 	}
 
 	@Override
-	public List<TaskResponseDto> filterTasks(TaskFilterDto dto)
+	public Page<TaskResponseDto> filterTasks(TaskFilterDto filterDto, Pageable pageable)
 	{
-		String message = dto.getMessage();
-		String userName = dto.getUserName();
+		System.out.println("Filter DTO → message: " + filterDto.getMessage());
+		System.out.println("Filter DTO → createdFor: " + filterDto.getCreatedFor());
 
-		List<Task> filtered = tr.findAll().stream().filter((task) -> {
-			boolean matchesMsg = (message == null || message.isBlank())
-					|| task.getMessage()
-							.toLowerCase()
-							.contains(message.toLowerCase());
-			boolean matchesName = (userName == null || userName.isBlank())
-					|| task.getCreatedFor()
-							.getName()
-							.toLowerCase()
-							.contains(userName.toLowerCase());
+		String message = filterDto.getMessage();
+		String user = filterDto.getCreatedFor();
 
-			return matchesMsg && matchesName;
+		List<Task> filteredTasks = tr.findAll().stream().filter((task) -> {
+			boolean matchesMessage = (message == null || message.isBlank())
+					|| task.getMessage().toLowerCase().contains(message.toLowerCase());
+			boolean matchesUser = (user == null || user.isBlank()) || task.getCreatedFor()
+					.getName()
+					.trim()
+					.toLowerCase()
+					.contains(user.toLowerCase());
+
+			return matchesMessage && matchesUser;
 		}).toList();
 
-		return filtered.stream().map(mapper::toResponse).toList();
+		List<TaskResponseDto> filteredTaskResponseDtos = filteredTasks.stream()
+				.map(mapper::toResponse)
+				.toList();
+
+		// pageable.getOffset() returns the starting index in the full list based on the
+		// current page.
+		int start = (int) pageable.getOffset();
+		int end = Math.min(start + pageable.getPageSize(),
+				filteredTaskResponseDtos.size());
+
+		List<TaskResponseDto> pagedList = filteredTaskResponseDtos.subList(start, end);
+
+		return new PageImpl<>(pagedList, pageable, filteredTaskResponseDtos.size());
 	}
 
 }
