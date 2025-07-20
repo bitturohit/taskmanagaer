@@ -1,7 +1,7 @@
 package com.taskManager.repository;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.taskManager.model.User;
@@ -14,5 +14,8 @@ public interface UserRepository extends JpaRepository<User, Integer>
 	// :keyword, '%')) OR LOWER(u.email) LIKE LOWER(CONCAT('%', :keyword, '%'))")
 	// List<User> search(String keyword);
 
-	List<User> findByNameContainingIgnoreCaseOrEmailContainingIgnoreCase(String name, String email);
+	Page<User> findByNameContainingIgnoreCaseOrEmailContainingIgnoreCase(
+			String name,
+			String email,
+			Pageable pageable);
 }

@@ -1,7 +1,5 @@
 package com.taskManager.service;
 
-import java.util.List;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -16,5 +14,5 @@ public interface UserService
 
 	void deleteById(int id);
 
-	List<UserResponseDto> searchUsers(String keyword);
+	Page<UserResponseDto> searchUsers(String keyword, Pageable pageable);
 }

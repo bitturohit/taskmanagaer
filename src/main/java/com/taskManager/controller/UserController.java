@@ -1,10 +1,7 @@
 package com.taskManager.controller;
 
-import java.util.List;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,10 +10,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.taskManager.dto.user.UserRequestDto;
 import com.taskManager.dto.user.UserResponseDto;
 import com.taskManager.response.ApiResponse;
 import com.taskManager.response.PageResponse;
-import com.taskManager.response.PageResponseBuilder;
 import com.taskManager.service.UserService;
 
 import jakarta.validation.Valid;
@@ -34,33 +31,36 @@ public class UserController
 			Pageable pageable)
 	{
 		Page<UserResponseDto> users = us.findAll(pageable);
-		PageResponse<UserResponseDto> metaWrapped = PageResponseBuilder
-				.build(users);
-		return ResponseEntity.ok(new ApiResponse<>(
-				true,
-				"Fetched paginated users",
-				metaWrapped));
+		PageResponse<UserResponseDto> metaWrapped = PageResponse.from(users);
+
+		return ResponseEntity
+				.ok(ApiResponse.success(metaWrapped, "Fetched paginated users"));
 	}
 
+	// GET localhost:8080/api/users/search?query=example
+	// GET localhost:8080/api/users/search?query=peter
+	// localhost:8080/api/users/search?query=example&page=1&size=1
 	@GetMapping("/search")
-	public ResponseEntity<ApiResponse<List<UserResponseDto>>> searchusers(
-			@RequestParam String query)
+	public ResponseEntity<ApiResponse<Page<UserResponseDto>>> searchusers(
+			@RequestParam String query,
+			Pageable pageable)
 	{
-		List<UserResponseDto> results = us.searchUsers(query);
-		return ResponseEntity
-				.ok(new ApiResponse<>(true, "User search results", results));
+		Page<UserResponseDto> results = us.searchUsers(query, pageable);
+
+		String msg = results.isEmpty() ? "No users matched your search query"
+				: "User search results\n";
+
+		return ResponseEntity.ok(ApiResponse.success(results, msg));
 	}
 
 	@PostMapping
 	public ResponseEntity<ApiResponse<UserResponseDto>> createUser(
-			@Valid @RequestBody com.taskManager.dto.user.UserRequestDto uDto)
+			@Valid @RequestBody UserRequestDto uDto)
 	{
 		UserResponseDto savedUser = us.saveUser(uDto);
-		return ResponseEntity.status(HttpStatus.CREATED)
-				.body(new ApiResponse<>(
-						true,
-						"User created successfully",
-						savedUser));
+
+		return ResponseEntity
+				.ok(ApiResponse.success(savedUser, "User created successfully"));
 	}
 
 }

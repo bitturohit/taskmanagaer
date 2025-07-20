@@ -60,9 +60,6 @@ public class TaskServiceImpl implements TaskService
 	@Override
 	public Page<TaskResponseDto> filterTasks(TaskFilterDto filterDto, Pageable pageable)
 	{
-		System.out.println("Filter DTO → message: " + filterDto.getMessage());
-		System.out.println("Filter DTO → createdFor: " + filterDto.getCreatedFor());
-
 		String message = filterDto.getMessage();
 		String user = filterDto.getCreatedFor();
 

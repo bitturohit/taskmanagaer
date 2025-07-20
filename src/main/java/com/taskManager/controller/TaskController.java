@@ -4,7 +4,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,7 +20,6 @@ import com.taskManager.dto.task.TaskRequestDto;
 import com.taskManager.dto.task.TaskResponseDto;
 import com.taskManager.response.ApiResponse;
 import com.taskManager.response.PageResponse;
-import com.taskManager.response.PageResponseBuilder;
 import com.taskManager.service.TaskService;
 
 import jakarta.validation.Valid;
@@ -40,14 +38,13 @@ public class TaskController
 	{
 
 		Page<TaskResponseDto> tasks = taskService.getAllTasks(pageable);
-		PageResponse<TaskResponseDto> metaWrapped = PageResponseBuilder.build(tasks);
+		PageResponse<TaskResponseDto> metaWrapped = PageResponse.from(tasks);
 
-		return ResponseEntity
-				.ok(new ApiResponse<>(true, "Fetched all tasks", metaWrapped));
+		return ResponseEntity.ok(ApiResponse.success(metaWrapped, "Fetched all tasks"));
 	}
 
 	@GetMapping("/filter")
-	public ResponseEntity<ApiResponse<Page<TaskResponseDto>>> filterTasks(
+	public ResponseEntity<ApiResponse<PageResponse<TaskResponseDto>>> filterTasks(
 			@ModelAttribute TaskFilterDto filterDto,
 			@RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "5") int size,
@@ -60,8 +57,9 @@ public class TaskController
 		Pageable pageable = PageRequest.of(page, size, sort);
 
 		Page<TaskResponseDto> filtered = taskService.filterTasks(filterDto, pageable);
+		PageResponse<TaskResponseDto> response = PageResponse.from(filtered);
 
-		return ResponseEntity.ok(ApiResponse.success(filtered, "Filtered tasks"));
+		return ResponseEntity.ok(ApiResponse.success(response, "Filtered tasks"));
 	}
 
 	@PostMapping
@@ -70,8 +68,9 @@ public class TaskController
 	{
 		TaskResponseDto task = taskService.createTask(taskDto);
 
-		return ResponseEntity.status(HttpStatus.CREATED)
-				.body(new ApiResponse<>(true, "New task created", task));
+		return ResponseEntity.ok(ApiResponse.success(task, "New task created"));
+//		return ResponseEntity.status(HttpStatus.CREATED)
+//				.body(new ApiResponse<>(true, "New task created", task));
 	}
 
 	@DeleteMapping("/{id}")
@@ -79,9 +78,7 @@ public class TaskController
 	{
 		taskService.deleteTask(id);
 
-		return ResponseEntity.ok(new ApiResponse<>(
-				true,
-				"Task with ID " + id + " deleted successfully",
-				null));
+		return ResponseEntity.ok(ApiResponse.success(null,
+				"Task with ID " + id + " deleted successfully"));
 	}
 }
